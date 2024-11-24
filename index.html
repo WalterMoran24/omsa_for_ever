@@ -50,7 +50,14 @@
         input.color {
             background-color:rgb(0, 140, 255);
         }
-        
+        input.colour{
+          background-color: red;
+        }input.coler{
+          background-color: yellow;
+        }
+        input.colo{
+          background-color: green;
+        }
         .buttons {
             display: block;
             gap: 10px;
@@ -69,6 +76,7 @@
             cursor: pointer;
             transition: background-color 0.3s;
         }
+        
         
         button:hover {
             background-color: #0056b3;
@@ -99,9 +107,23 @@
 <body>
     <div class="contenido">
         <h2>Calculadora de Salarios</h2>
+<!--############################################################################################################-->
+        <div class="input-group">
+            <label for="categoria_1">Categoria_1:</label>
+            <input type="number" id="categoria_1" class="colour" step="0.01">
+        </div>
+        <div>
+          <label for="antiguedad">Años efectivo:(si tenes menos de un año en efectivo no aplica)</label>
+          <input type="number" id="antiguedad" class="colour" step="0.01">
+        </div>
         
         <div class="input-group">
-            <label for="categoria">Categoria:</label>
+          <label for="actualizado">categoria actualizada:</label>
+          <input type="number" id="actualizado" class="colour" step="0.01">
+        </div>
+<!--############################################################################################################-->
+        <div class="input-group">
+            <label for="categoria">Categoria 1° quincena:</label>
             <input type="number" id="categoria" class="color" step="0.01">
         </div>
         
@@ -116,35 +138,46 @@
         </div>
         
         <div class="input-group">
+          <label for="categoria_2">Categoria 2° quincena:</label>
+          <input type="number" id="categoria_2" class="coler" step="0.01">
+      </div>
+
+        <div class="input-group">
             <label for="horas_2">Horas trabajadas (2da quincena):</label>
-            <input type="number" id="horas_2" class="color" step="0.01">
+            <input type="number" id="horas_2" class="coler" step="0.01">
         </div>
         
         <div class="input-group">
             <label for="quincena_2">Segunda quincena:</label>
-            <input type="number" id="quincena_2" class="color" readonly>
+            <input type="number" id="quincena_2" class="coler" readonly>
         </div>
         
         <div class="input-group">
             <label for="horas_mes">Horas mes:</label>
-            <input type="number" id="horas_mes" class="color" readonly>
+            <input type="number" id="horas_mes" class="colo" readonly>
         </div>
         
         <div class="input-group">
             <label for="imgr">Mínimo global:</label>
-            <input type="number" class="color" id="imgr" readonly>
+            <input type="number" class="colo" id="imgr" readonly>
         </div>
         
         <div class="input-group">
             <label for="horas_total">Total mensual:</label>
-            <input type="number" class="color" id="horas_total" readonly>
+            <input type="number" class="colo" id="horas_total" readonly>
         </div>
         
         <div class="buttons">
+            <button style="background-color: red;"onclick="antiguedad()">Antiguedad</button>
+            <br>
+            <br>
             <button onclick="operar_quincena_1()">1° quincena</button>
             <br>
             <br>
             <button onclick="operar_quincena_2()">2° quincena</button>
+            <br>
+            <br>
+            <button style="background-color: red;"onclick="titulo_secundario()">2°Quincena con titulo</button>
             <br>
             <br>
             <button onclick="operar_sueldo_total()">Horas mes</button>
@@ -155,6 +188,18 @@
     </div>
 
     <script>
+        function antiguedad(){
+          try{
+            const valor_hora = parseFloat(document.getElementById('categoria_1').value);
+            const antiguedad = parseFloat(document.getElementById('antiguedad').value);
+            const porcentaje = antiguedad/100
+            const aumento = porcentaje * valor_hora;
+            const total = (aumento + valor_hora);
+            document.getElementById('actualizado').value = total;
+          }catch (error) {
+            alert("Error: Ingrese datos válidos");
+        }
+      }
         function operar_quincena_1() {
             try {
                 const valor_hora = parseFloat(document.getElementById('categoria').value);
@@ -163,6 +208,23 @@
                 const descuento = bruto * 0.195;
                 const neto = Math.round((bruto - descuento) * 100) / 100;
                 document.getElementById('quincena_1').value = neto;
+            } catch (error) {
+                alert("Error: Ingrese datos válidos");
+            }
+        }
+
+        function titulo_secundario() {
+            try {
+                const valor_hora = parseFloat(document.getElementById('categoria_2').value);
+                const horas_trabajadas = parseFloat(document.getElementById('horas_2').value);
+                const secundario = 16039.98
+                const bruto_1 = valor_hora * horas_trabajadas;/*horas en bruto*/
+                const bruto_2 = bruto_1+ secundario;/*horas en bruto + secundario bruto*/
+                const antiguedad_1 =bruto_2 * 0.01/*4032*/
+                const antiguedad_2 =antiguedad_1 + bruto_2
+                const descuento = antiguedad_2 * 0.20834;
+                const neto = Math.round((antiguedad_2 - descuento) * 100) / 100;
+                document.getElementById('quincena_2').value = neto;
             } catch (error) {
                 alert("Error: Ingrese datos válidos");
             }

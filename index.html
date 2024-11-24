@@ -1,0 +1,225 @@
+<!--ctrl + f: find and replace-->
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Calculadora de Salarios</title>
+    <style>
+      .imagen { float: left; margin-right: 10px; /* Ajusta el espacio entre las imágenes */ }
+      .pdf-container { float: right; width: 50%; /* Ajusta el tamaño según tus necesidades */
+        height: 1000px; }
+        .contenido { width: 45%; /* Ajusta el tamaño según tus necesidades */
+          float: left;
+          display: inline;}
+      /*Dentro del body defino la fuente de toda la pagina mediante el font-family: */
+        body {
+            font-family: Arial, sans-serif;
+        }
+        
+        .container {
+            background-color: white;/*medio obvio*/
+            padding: 20px;/*se refiere al espacio interior que se encuentra entre el contenido de un elemento y su borde*/
+            border-radius: 8px;/*es una propiedad de CSS que permite redondear las esquinas de los elementos*/
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);/*es una propiedad de CSS que te permite añadir sombras a los elementos, creando un efecto de profundidad.*/
+        }
+        
+        .input-group {
+            margin-bottom: 15px;/*se utiliza para establecer el espacio exterior (margen) debajo de un elemento.*/
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 5px;
+            color: #333;
+        }
+        /*El elemento <label> en HTML es muy útil para asociar una etiqueta de texto con un elemento
+          de formulario, como un <input>, <select>, o <textarea>.
+          Esto mejora la accesibilidad de tu formulario, ya que los usuarios pueden hacer
+          clic en la etiqueta para enfocar el campo correspondiente.
+        */
+        /*en CSS se utiliza para controlar cómo se presentan los elementos HTML en la página.
+        Esta propiedad determina si un elemento es tratado como un bloque, una línea, una lista,entre otros
+        */
+        input {
+            width: 100px;
+            padding: 8px;
+            border: 1px solid #000000;
+            border-radius: 4px;
+            margin-bottom: 10px;
+        }
+        input.color {
+            background-color:rgb(0, 140, 255);
+        }
+        
+        .buttons {
+            display: block;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            width: 120px; /* Puedes ajustar el ancho según tus necesidades */
+            margin-bottom: 30px; /* Espacio entre los botones */
+        }
+        
+        button {
+            padding: 8px 16px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        
+        button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+    <style>
+      /*El div actúa como un contenedor que agrupa la etiqueta y el campo de entrada.
+
+      -El input group es una convención comúnmente utilizada en el diseño web,
+      especialmente con frameworks como Bootstrap(NI IDEA QUE ES ESO TODAVIA).
+      Para agrupar elementos de entrada de formularios junto con etiquetas, botones,
+      iconos u otros elementos de interfaz.
+
+      <input type="number" id="valor_hora" class="grey-bg" step="0.01">:
+      Este es un campo de entrada numérica. Los atributos son:
+
+      type="number": Especifica que el campo de entrada debe aceptar solo números.
+
+      id="Categoria": Asigna un identificador único para el campo de entrada,
+      que debe coincidir con el for en la etiqueta.
+
+      class="grey-bg": Asigna una clase al campo de entrada, que puedes usar
+      en CSS para aplicar estilos, como un fondo gris.
+
+      step="0.01": Permite que el campo acepte valores con dos decimales.*/
+    </style>
+</head>
+<body>
+    <div class="contenido">
+        <h2>Calculadora de Salarios</h2>
+        
+        <div class="input-group">
+            <label for="categoria">Categoria:</label>
+            <input type="number" id="categoria" class="color" step="0.01">
+        </div>
+        
+        <div class="input-group">
+            <label for="horas_1">Horas trabajadas (1ra quincena):</label>
+            <input type="number" id="horas_1" class="color" step="0.01">
+        </div>
+        
+        <div class="input-group">
+            <label for="quincena_1">Primer quincena:</label>
+            <input type="number" id="quincena_1" class="color" readonly>
+        </div>
+        
+        <div class="input-group">
+            <label for="horas_2">Horas trabajadas (2da quincena):</label>
+            <input type="number" id="horas_2" class="color" step="0.01">
+        </div>
+        
+        <div class="input-group">
+            <label for="quincena_2">Segunda quincena:</label>
+            <input type="number" id="quincena_2" class="color" readonly>
+        </div>
+        
+        <div class="input-group">
+            <label for="horas_mes">Horas mes:</label>
+            <input type="number" id="horas_mes" class="color" readonly>
+        </div>
+        
+        <div class="input-group">
+            <label for="imgr">Mínimo global:</label>
+            <input type="number" class="color" id="imgr" readonly>
+        </div>
+        
+        <div class="input-group">
+            <label for="horas_total">Total mensual:</label>
+            <input type="number" class="color" id="horas_total" readonly>
+        </div>
+        
+        <div class="buttons">
+            <button onclick="operar_quincena_1()">1° quincena</button>
+            <br>
+            <br>
+            <button onclick="operar_quincena_2()">2° quincena</button>
+            <br>
+            <br>
+            <button onclick="operar_sueldo_total()">Horas mes</button>
+            <br>
+            <br>
+            <button onclick="saber_minimo()">IMGR</button>
+        </div>
+    </div>
+
+    <script>
+        function operar_quincena_1() {
+            try {
+                const valor_hora = parseFloat(document.getElementById('categoria').value);
+                const horas_trabajadas = parseFloat(document.getElementById('horas_1').value);
+                const bruto = valor_hora * horas_trabajadas;
+                const descuento = bruto * 0.195;
+                const neto = Math.round((bruto - descuento) * 100) / 100;
+                document.getElementById('quincena_1').value = neto;
+            } catch (error) {
+                alert("Error: Ingrese datos válidos");
+            }
+        }
+
+        function operar_quincena_2() {
+            try {
+                const valor_hora = parseFloat(document.getElementById('categoria').value);
+                const horas_trabajadas = parseFloat(document.getElementById('horas_2').value);
+                const bruto = valor_hora * horas_trabajadas;
+                const descuento = bruto * 0.195;
+                const neto = Math.round((bruto - descuento) * 100) / 100;
+                document.getElementById('quincena_2').value = neto;
+            } catch (error) {
+                alert("Error: Ingrese datos válidos");
+            }
+        }
+
+        function operar_sueldo_total() {
+            try {
+                const valor_hora = parseFloat(document.getElementById('categoria').value);
+                const horas_trabajadas_1 = parseFloat(document.getElementById('horas_1').value);
+                const horas_trabajadas_2 = parseFloat(document.getElementById('horas_2').value);
+                const total_horas = horas_trabajadas_1 + horas_trabajadas_2;
+                const bruto = total_horas * valor_hora;
+                const descuento = bruto * 0.195;
+                const neto = Math.round((bruto - descuento) * 100) / 100;
+                document.getElementById('horas_mes').value = neto;
+            } catch (error) {
+                alert("Error: Ingrese datos válidos");
+            }
+        }
+
+        function saber_minimo() {
+            try {
+                const valor_hora = parseFloat(document.getElementById('categoria').value);
+                const horas_trabajadas_1 = parseFloat(document.getElementById('horas_1').value);
+                const horas_trabajadas_2 = parseFloat(document.getElementById('horas_2').value);
+                const total_horas = horas_trabajadas_1 + horas_trabajadas_2;
+                const bruto = total_horas * valor_hora;
+                const descuento = bruto * 0.195;
+                const neto = Math.round((bruto - descuento) * 100) / 100;
+
+                const imgr = 727823.48;
+                const imgr_neto = Math.round(imgr * 0.195);
+                const imgr_total = imgr - imgr_neto;
+                const diferencia = Math.round((imgr_total - neto) * 100) / 100;
+
+                document.getElementById('imgr').value = diferencia;
+                document.getElementById('horas_total').value = imgr_total;
+            } catch (error) {
+                alert("Error: Ingrese datos válidos");
+            }
+        }
+    </script>
+    
+    <div class="pdf-container">
+      <img src="./mwoah.jpg" type="application/jpg" width="100%" height="100%"> </div>
+    </body>
+</html>

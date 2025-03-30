@@ -1,0 +1,158 @@
+<!--ctrl + f: find and replace-->
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="main.css">
+    </head>
+    <body>
+      <div class="contenido">
+        <h2>Calculadora Omsa</h2>
+        <div class="input-group">
+          <label for="categoria">Ingrese su categoria (bruto):</label>
+          <input type="number" id="categoria" class="color" step="0.01">
+        </div>
+
+
+        <div>
+          <label for="antiguedad">Años efectivo (menos de uno = 0):</label>
+          <input type="number" id="antiguedad" class="color" step="0.01">
+        </div>
+
+        <div class="input-group">
+          <label for="horas_1">Horas trabajadas (1ra quincena):</label>
+          <input type="number" id="horas_1" class="color" step="0.01">
+        </div>
+
+        <div class="input-group">
+          <label for="quincena_1">Primer quincena en neto:</label>
+          <input type="number" id="quincena_1" class="color" readonly>
+        </div>
+        <div>
+          <button onclick="operar_quincena_1()">1° quincena</button>
+        </div>
+<div>
+  <label for="titulo">Valor titulo secundario</label>
+  <input type="number" id="titulo" class="color" step="0.01">
+</div>
+
+<div class="input-group">
+  <label for="horas_2">Horas trabajadas (2da quincena):</label>
+  <input type="number" id="horas_2" class="color" step="0.01">
+</div>
+
+<div class="input-group">
+  <label for="quincena_2">Segunda quincena en neto + IMGR:</label>
+  <input type="number" id="quincena_2" class="color" readonly>
+</div>
+<div>
+  <button onclick="operar_quincena_2()">2° quincena</button>
+</div>
+<!--############################################################################################################-->
+        <div class="input-group">
+            <label for="horas_mes">Total ambas quincenas:</label>
+            <input type="number" id="horas_mes" class="color" readonly>
+        </div>
+        
+        <div class="input-group">
+            <label for="imgr">IMGR:</label>
+            <input type="number" class="color" id="imgr" readonly>
+        </div>
+        <div class="input-group">
+          <label for="2Q_sin_imgr">2da quincena sin IMGR:</label>
+          <input type="number" class="color" id="2Q_sin_imgr" readonly>
+      </div>
+      <div>
+        <button onclick="operar_horas_mes()">Horas mes</button>
+        <button onclick="saber_minimo()">IMGR</button>
+        <div>
+          <a href="./uom.jpg" style="color: black;margin-left: 20px;">Convenio UOM</a>
+      </div>
+    </div>
+    <script>
+
+      function operar_quincena_1() {
+        try {
+          const valor_hora = parseFloat(document.getElementById('categoria').value);
+          const horas_trabajadas = parseFloat(document.getElementById('horas_1').value);
+          const antiguedad = parseFloat(document.getElementById('antiguedad').value);
+          const bruto = valor_hora * horas_trabajadas;
+          const porcentaje_anio = antiguedad / 100;
+          const antiguedad_bruta_1 = porcentaje_anio * bruto;
+          const bruto_1 = antiguedad_bruta_1 + bruto;
+          const descuento = bruto_1 * 0.195;
+          const neto = Math.round((bruto_1 - descuento) * 100) / 100;
+          
+          // Store bruto_1 value in a variable accessible to both functions
+          window.bruto_1_quincena_1 = bruto_1;
+          //window.antiguedad_1_quincena_1 = antiguedad_bruta_1;
+          
+          document.getElementById('quincena_1').value = neto;
+        } catch (error) {
+          alert("Error: Ingrese datos válidos");
+        }
+      }
+
+      function operar_quincena_2() {
+        try {
+          const valor_hora = parseFloat(document.getElementById('categoria').value);
+          const horas_trabajadas = parseFloat(document.getElementById('horas_2').value);
+          const antiguedad = parseFloat(document.getElementById('antiguedad').value);
+          const titulo_secundario = parseFloat(document.getElementById('titulo').value);
+          const imgr = 809268.00;
+          const seguro_uom = 6041.99;
+          
+          let bruto_1 = window.bruto_1_quincena_1;
+          //let antiguedad_bruta_1 = window.antiguedad_1_quincena_1 ;
+          
+            const bruto = valor_hora * horas_trabajadas;// categoria * horas trabajadas
+            const bruto_total = bruto + titulo_secundario;// le sumo el titulo secundario
+            const porcentaje_anio = antiguedad / 100;
+            const antiguedad_bruta = porcentaje_anio * bruto_total;// ahora tengo la antiguedad de la segunda quincena
+            const bruto_sin_imgr = antiguedad_bruta + bruto_total;
+          
+          //ahora falta saber el minimo, seria restar las dos quincenas, las dos antiguedades y el titulo del minimo (todo en bruto)
+          const minimo_real = imgr - bruto_1 -bruto_total-antiguedad_bruta;
+          const bruto_3 = bruto_total + antiguedad_bruta + minimo_real;
+          const descuento = bruto_3 * 0.195;
+          const neto = Math.round((bruto_3 - descuento- seguro_uom) * 100) / 100;
+
+          window.IMGR=minimo_real;
+          window.minimo_sin_imgr=bruto_sin_imgr;
+          
+          
+          document.getElementById('quincena_2').value = neto;
+        } catch (error) {
+          alert("Error: Ingrese datos válidos");
+        }
+      }
+
+        function saber_minimo() {
+            try {
+              let minimo_real=window.IMGR;
+                document.getElementById('imgr').value = Math.round(minimo_real*100)/100;
+            } catch (error) {
+                alert("Error: Ingrese datos válidos");
+            }
+        }
+
+        function operar_horas_mes() {
+            try {
+              let bruto_sin_imgr=window.minimo_sin_imgr;
+              let bruto_1 =window.bruto_1_quincena_1;
+              const seguro_uom = 6041.99;
+              const operacion = bruto_1 + bruto_sin_imgr;
+              const descuento = operacion * 0.195;
+              const diferencia = operacion - descuento-seguro_uom;
+                document.getElementById('horas_mes').value = Math.round(diferencia*100)/100;
+                const diferencia_v2 = bruto_sin_imgr * 0.195;
+                const q2 = bruto_sin_imgr - diferencia_v2-seguro_uom;
+                document.getElementById('2Q_sin_imgr').value = Math.round(q2*100)/100;
+            } catch (error) {
+                alert("Error: Ingrese datos válidos");
+            }
+        }
+    </script>
+    </body>
+</html>
